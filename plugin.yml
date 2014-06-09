@@ -1,0 +1,5 @@
+name: LoreAnimations
+main: com.github.whitehooder.LoreAnimations.LoreAnimations
+version: 1.0
+author: Whitehooder
+description: A plugin that plays animations in item lores.

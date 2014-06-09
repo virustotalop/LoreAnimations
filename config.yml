@@ -1,0 +1,11 @@
+# GIF-speed:
+#    1 means it will run at the fps specified after "fps:"
+#    0.5 means half speed. Most GIFs run best with half speed and "fps:" at 20, resulting in 10 fps.
+#    Also, this step of the config is really not that configurable.
+#    The only values resulting in any change is from 1, 0.5, 0.25, 0.125, 0.0625 and so on.
+# FPS:
+#    Max FPS is 20 so if you enter anything more than 20 it will still be fixed at 20.
+#    If anything lower than 1 is entered the fps will be fixed at 1.
+
+fps: 20
+gif-speed: 0.5
