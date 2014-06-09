@@ -1,8 +1,14 @@
 package com.github.whitehooder.LoreAnimations;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.stream.ImageInputStream;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
@@ -13,15 +19,6 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.metadata.IIOMetadata;
-import javax.imageio.stream.ImageInputStream;
-
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 public class LoreAnimator {
 
@@ -129,7 +126,7 @@ public class LoreAnimator {
 				ascii += s;
 			}
 			String speed = "";
-			int pauses = (int) Math.round(1D/plugin.gif_speed);
+			int pauses = (int) Math.round(1D/plugin.gifSpeed);
 			for (int i = 0; i < pauses-1; i++) {
 				speed += "==COPY==\n";
 			}

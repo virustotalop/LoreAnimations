@@ -1,16 +1,5 @@
 package com.github.whitehooder.LoreAnimations;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -25,36 +14,43 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
 public class LoreAnimations extends JavaPlugin implements Listener {
+
     private static File animationFolder;
     private static File gifFolder;
     
     public int fps = 20;
-    public double gif_speed = 0.5;
+    public double gifSpeed = 0.5;
     
-    public Set<Inventory> invlist = new HashSet<Inventory>();
-    public HashMap<Material, Integer> framecounter = new HashMap<Material, Integer>();
+    public Set<Inventory> invList = new HashSet<Inventory>();
+    public HashMap<Material, Integer> frameCounter = new HashMap<Material, Integer>();
     public HashMap<Material, ArrayList<ArrayList<String>>> animation = new HashMap<Material, ArrayList<ArrayList<String>>>();
 
-    @Override
-    public void onEnable() {
+    @SuppressWarnings("UnusedDeclaration")
+
+    public void initialiseFolders() {
+
         animationFolder = new File(getDataFolder(), "animations");
         gifFolder = new File(getDataFolder(), "gifs");
-        saveDefaultConfig();
-        if (!gifFolder.exists()) {
-        	gifFolder.mkdir();
-        }
-        if (!animationFolder.exists()) {
-        	animationFolder.mkdir();
-        }
+        animationFolder.mkdirs();
+        gifFolder.mkdirs();
+    }
+
+    public void initialiseConfig() {
+
+        this.saveDefaultConfig();
         fps = getConfig().getInt("fps");
-        gif_speed = getConfig().getDouble("gif-speed");
-        for (Player p : getServer().getOnlinePlayers()) {
-            invlist.add(p.getInventory());
-        }
-        for (File file : gifFolder.listFiles()) {
-        	new LoreAnimator(file, this);
-        }
+        gifSpeed = getConfig().getDouble("gif-speed");
+    }
+
+    public void initialiseAnimations() {
+
         for (File file : animationFolder.listFiles()) {
             if (file.getName().endsWith(".txt")) {
                 String string = file.getName().replaceFirst("\\.txt$", "");
@@ -63,10 +59,10 @@ public class LoreAnimations extends JavaPlugin implements Listener {
                     mat = Material.matchMaterial(getConfig().getString(string));
                     string = getConfig().getString(string);
                 } else {
-                	mat = Material.matchMaterial(string);
+                    mat = Material.matchMaterial(string);
                 }
                 if (mat != null) {
-                    framecounter.put(mat, 0);
+                    frameCounter.put(mat, 0);
                     InputStream iostream = null;
                     InputStreamReader ioreader = null;
                     BufferedReader bfreader = null;
@@ -83,9 +79,9 @@ public class LoreAnimations extends JavaPlugin implements Listener {
                                     frames.add((new ArrayList<String>(frame)));
                                     frame.clear();
                                 } else if (line.equals("==COPY==")) {
-                                	frame.add("==COPY==");
-                                	frames.add((new ArrayList<String>(frame)));
-                                	frame.clear();
+                                    frame.add("==COPY==");
+                                    frames.add((new ArrayList<String>(frame)));
+                                    frame.clear();
                                 } else {
                                     frame.add(colorize(line));
                                 }
@@ -128,26 +124,49 @@ public class LoreAnimations extends JavaPlugin implements Listener {
                 }
             }
         }
+    }
+
+    public void convertGifs() {
+
+        for (File file : gifFolder.listFiles()) {
+            new LoreAnimator(file, this);
+        }
+    }
+
+    @Override
+    public void onEnable() {
+
+        initialiseFolders();
+
+        initialiseConfig();
+
+        convertGifs();
+
+        initialiseAnimations();
+
+        for (Player p : getServer().getOnlinePlayers()) {
+            invList.add(p.getInventory());
+        }
 
         getServer().getScheduler().runTaskTimer(this, new Runnable() {
             public void run() {
-                for (Inventory inv : invlist) {
+                for (Inventory inv : invList) {
                     for (ItemStack item : inv.getContents()) {
                         if (item != null) {
                             if (animation.containsKey(item.getType())) {
                                 ItemMeta meta = item.getItemMeta();
                                 if (animation.get(item.getType()).size() > 0) {
-                                	if (animation.get(item.getType()).get(framecounter.get(item.getType())).contains("==COPY==")) {
-                                		framecounter.put(item.getType(), framecounter.get(item.getType()) + 1);
-                                		if (framecounter.get(item.getType()) > (animation.get(item.getType()).size() - 1)) {
-                                            framecounter.put(item.getType(), 0);
+                                	if (animation.get(item.getType()).get(frameCounter.get(item.getType())).contains("==COPY==")) {
+                                		frameCounter.put(item.getType(), frameCounter.get(item.getType()) + 1);
+                                		if (frameCounter.get(item.getType()) > (animation.get(item.getType()).size() - 1)) {
+                                            frameCounter.put(item.getType(), 0);
                                         }
                                     } else {
-                                    	meta.setLore(animation.get(item.getType()).get(framecounter.get(item.getType())));
-                                        framecounter.put(item.getType(), framecounter.get(item.getType()) + 1);
+                                    	meta.setLore(animation.get(item.getType()).get(frameCounter.get(item.getType())));
+                                        frameCounter.put(item.getType(), frameCounter.get(item.getType()) + 1);
                                         item.setItemMeta(meta);
-                                        if (framecounter.get(item.getType()) > (animation.get(item.getType()).size() - 1)) {
-                                            framecounter.put(item.getType(), 0);
+                                        if (frameCounter.get(item.getType()) > (animation.get(item.getType()).size() - 1)) {
+                                            frameCounter.put(item.getType(), 0);
                                         }
                                     }
                                 } else {
@@ -164,28 +183,34 @@ public class LoreAnimations extends JavaPlugin implements Listener {
     }
 
     public String colorize(String s) {
+
         return ChatColor.translateAlternateColorCodes('&', s) + ChatColor.RESET;
     }
 
     @EventHandler
     public void onOpenInventory(InventoryOpenEvent event) {
-        invlist.add(event.getInventory());
+
+        invList.add(event.getInventory());
     }
 
     @EventHandler
     public void onCloseInventory(InventoryCloseEvent event) {
-        invlist.remove(event.getInventory());
+
+        invList.remove(event.getInventory());
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        if (!invlist.contains(e.getPlayer().getInventory())) {
-            invlist.add(e.getPlayer().getInventory());
+
+        if (!invList.contains(e.getPlayer().getInventory())) {
+
+            invList.add(e.getPlayer().getInventory());
         }
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
-        invlist.remove(e.getPlayer().getInventory());
+
+        invList.remove(e.getPlayer().getInventory());
     }
 }
