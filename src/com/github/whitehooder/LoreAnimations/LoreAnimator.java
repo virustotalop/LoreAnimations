@@ -20,15 +20,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoreAnimator {
+public class LoreAnimator implements Runnable {
 
     private ArrayList<String> pixels = new ArrayList<String>();
-
     private HashMap<Integer, Integer> colors = new HashMap<Integer, Integer>();
-
     private ArrayList<BufferedImage> frames = new ArrayList<BufferedImage>();
 
+    private LoreAnimations plugin;
+    private File file;
+
+
     public LoreAnimator(File file, LoreAnimations plugin) {
+
+        this.file = file;
+        this.plugin = plugin;
+    }
+
+    public void run() {
         colors.put(0, new Color(0, 0, 0).getRGB());
         colors.put(1, new Color(0, 0, 170).getRGB());
         colors.put(2, new Color(0, 170, 0).getRGB());

@@ -1,5 +1,6 @@
 package com.github.whitehooder.LoreAnimations;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.Listener;
@@ -113,6 +114,7 @@ public class LoreAnimations extends JavaPlugin implements Listener {
     }
 
     public void convertGifs() {
+
         for (File file : gifFolder.listFiles()) {
         	boolean exists = false;
         	for (File txt : animationFolder.listFiles()) {
@@ -122,7 +124,7 @@ public class LoreAnimations extends JavaPlugin implements Listener {
         		}	
         	}
         	if (!exists) {
-        		new LoreAnimator(file, this);
+                Bukkit.getScheduler().runTask(this, new LoreAnimator(file, this));
         	}
         }
     }
