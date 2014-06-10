@@ -128,7 +128,6 @@ public class LoreAnimations extends JavaPlugin implements Listener {
         initialiseAnimations();
 
         this.getServer().getScheduler().runTaskTimer(this, new DisplayRunnable(this), 0L, Math.round(20/fps));
-        getServer().getPluginManager().registerEvents(this, this);
     }
 
     public String colorize(String s) {
