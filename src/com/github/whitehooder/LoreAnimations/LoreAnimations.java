@@ -156,7 +156,6 @@ public class LoreAnimations extends JavaPlugin implements Listener {
     }
 
     public String colorize(String s) {
-
         return ChatColor.translateAlternateColorCodes('&', s) + ChatColor.RESET;
     }
 }
