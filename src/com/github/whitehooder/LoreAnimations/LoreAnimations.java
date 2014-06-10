@@ -14,8 +14,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 public class LoreAnimations extends JavaPlugin implements Listener {
 
@@ -24,8 +22,7 @@ public class LoreAnimations extends JavaPlugin implements Listener {
     
     public int fps = 20;
     public double gifSpeed = 0.5;
-    
-    public Set<Inventory> invList = new HashSet<Inventory>();
+
     public HashMap<Material, Integer> frameCounter = new HashMap<Material, Integer>();
     public HashMap<Material, ArrayList<ArrayList<String>>> animation = new HashMap<Material, ArrayList<ArrayList<String>>>();
 
