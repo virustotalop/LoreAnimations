@@ -37,6 +37,9 @@ public class LoreAnimator implements Runnable {
     }
 
     public void run() {
+
+        plugin.activeConversions++;
+
         colors.put(0, new Color(0, 0, 0).getRGB());
         colors.put(1, new Color(0, 0, 170).getRGB());
         colors.put(2, new Color(0, 170, 0).getRGB());
@@ -95,6 +98,7 @@ public class LoreAnimator implements Runnable {
             ciis.close();
         } catch (IOException e) {
             e.printStackTrace();
+            plugin.activeConversions--;
         }
 
         String tobewritten = "";
@@ -151,7 +155,9 @@ public class LoreAnimator implements Runnable {
             plugin.getLogger().info("Converted " + file.getName());
         } catch (IOException e) {
             e.printStackTrace();
+            plugin.activeConversions--;
         }
+        plugin.activeConversions--;
     }
 
     private BufferedImage deepCopy(BufferedImage bi) {

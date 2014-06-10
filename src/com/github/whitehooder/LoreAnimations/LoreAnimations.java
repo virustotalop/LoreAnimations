@@ -18,6 +18,8 @@ public class LoreAnimations extends JavaPlugin implements Listener {
     public int fps = 20;
     public double gifSpeed = 0.5;
 
+    public int activeConversions = 0;
+
     public HashMap<Material, Integer> frameCounter = new HashMap<Material, Integer>();
     public HashMap<Material, ArrayList<ArrayList<String>>> animation = new HashMap<Material, ArrayList<ArrayList<String>>>();
 
@@ -115,6 +117,8 @@ public class LoreAnimations extends JavaPlugin implements Listener {
 
     public void convertGifs() {
 
+        this.getLogger().info("Starting GIF Conversion!");
+
         for (File file : gifFolder.listFiles()) {
         	boolean exists = false;
         	for (File txt : animationFolder.listFiles()) {
@@ -124,9 +128,20 @@ public class LoreAnimations extends JavaPlugin implements Listener {
         		}	
         	}
         	if (!exists) {
-                Bukkit.getScheduler().runTask(this, new LoreAnimator(file, this));
+                Bukkit.getScheduler().runTaskAsynchronously(this, new LoreAnimator(file, this));
         	}
         }
+
+        while(this.activeConversions != 0) {
+
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        this.getLogger().info("GIF Conversion Finished!");
     }
 
     @Override
