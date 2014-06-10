@@ -1,5 +1,6 @@
 package com.github.whitehooder.LoreAnimations;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -7,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
@@ -146,32 +148,39 @@ public class LoreAnimations extends JavaPlugin implements Listener {
 
         for (Player p : getServer().getOnlinePlayers()) {
             invList.add(p.getInventory());
+            Player player;
         }
 
         getServer().getScheduler().runTaskTimer(this, new Runnable() {
             public void run() {
-                for (Inventory inv : invList) {
-                    for (ItemStack item : inv.getContents()) {
-                        if (item != null) {
-                            if (animation.containsKey(item.getType())) {
-                                ItemMeta meta = item.getItemMeta();
-                                if (animation.get(item.getType()).size() > 0) {
-                                	if (animation.get(item.getType()).get(frameCounter.get(item.getType())).contains("==COPY==")) {
-                                		frameCounter.put(item.getType(), frameCounter.get(item.getType()) + 1);
-                                		if (frameCounter.get(item.getType()) > (animation.get(item.getType()).size() - 1)) {
-                                            frameCounter.put(item.getType(), 0);
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    Inventory invent = player.getOpenInventory().getBottomInventory();
+                    if ((invent != null)
+                            && (invent.getType().equals(InventoryType.CHEST)
+                            || invent.getType().equals(InventoryType.PLAYER)
+                            || invent.getType().equals(InventoryType.MERCHANT))) {
+                        for (ItemStack item : invent.getContents()) {
+                            if (item != null) {
+                                if (animation.containsKey(item.getType())) {
+                                    ItemMeta meta = item.getItemMeta();
+                                    if (animation.get(item.getType()).size() > 0) {
+                                        if (animation.get(item.getType()).get(frameCounter.get(item.getType())).contains("==COPY==")) {
+                                            frameCounter.put(item.getType(), frameCounter.get(item.getType()) + 1);
+                                            if (frameCounter.get(item.getType()) > (animation.get(item.getType()).size() - 1)) {
+                                                frameCounter.put(item.getType(), 0);
+                                            }
+                                        } else {
+                                            meta.setLore(animation.get(item.getType()).get(frameCounter.get(item.getType())));
+                                            frameCounter.put(item.getType(), frameCounter.get(item.getType()) + 1);
+                                            item.setItemMeta(meta);
+                                            if (frameCounter.get(item.getType()) > (animation.get(item.getType()).size() - 1)) {
+                                                frameCounter.put(item.getType(), 0);
+                                            }
                                         }
                                     } else {
-                                    	meta.setLore(animation.get(item.getType()).get(frameCounter.get(item.getType())));
-                                        frameCounter.put(item.getType(), frameCounter.get(item.getType()) + 1);
+                                        meta.setLore(new ArrayList<String>());
                                         item.setItemMeta(meta);
-                                        if (frameCounter.get(item.getType()) > (animation.get(item.getType()).size() - 1)) {
-                                            frameCounter.put(item.getType(), 0);
-                                        }
                                     }
-                                } else {
-                                	meta.setLore(new ArrayList<String>());
-                                    item.setItemMeta(meta);
                                 }
                             }
                         }
