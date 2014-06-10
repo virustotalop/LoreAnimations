@@ -34,8 +34,6 @@ public class LoreAnimations extends JavaPlugin implements Listener {
     public HashMap<Material, Integer> frameCounter = new HashMap<Material, Integer>();
     public HashMap<Material, ArrayList<ArrayList<String>>> animation = new HashMap<Material, ArrayList<ArrayList<String>>>();
 
-    @SuppressWarnings("UnusedDeclaration")
-
     public void initialiseFolders() {
 
         animationFolder = new File(getDataFolder(), "animations");
@@ -148,7 +146,6 @@ public class LoreAnimations extends JavaPlugin implements Listener {
 
         for (Player p : getServer().getOnlinePlayers()) {
             invList.add(p.getInventory());
-            Player player;
         }
 
         getServer().getScheduler().runTaskTimer(this, new Runnable() {
