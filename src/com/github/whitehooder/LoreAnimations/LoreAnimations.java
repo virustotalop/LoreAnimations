@@ -4,13 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -144,10 +139,6 @@ public class LoreAnimations extends JavaPlugin implements Listener {
 
         initialiseAnimations();
 
-        for (Player p : getServer().getOnlinePlayers()) {
-            invList.add(p.getInventory());
-        }
-
         getServer().getScheduler().runTaskTimer(this, new Runnable() {
             public void run() {
                 for (Player player : Bukkit.getOnlinePlayers()) {
@@ -191,32 +182,5 @@ public class LoreAnimations extends JavaPlugin implements Listener {
     public String colorize(String s) {
 
         return ChatColor.translateAlternateColorCodes('&', s) + ChatColor.RESET;
-    }
-
-    @EventHandler
-    public void onOpenInventory(InventoryOpenEvent event) {
-
-        invList.add(event.getInventory());
-    }
-
-    @EventHandler
-    public void onCloseInventory(InventoryCloseEvent event) {
-
-        invList.remove(event.getInventory());
-    }
-
-    @EventHandler
-    public void onJoin(PlayerJoinEvent e) {
-
-        if (!invList.contains(e.getPlayer().getInventory())) {
-
-            invList.add(e.getPlayer().getInventory());
-        }
-    }
-
-    @EventHandler
-    public void onQuit(PlayerQuitEvent e) {
-
-        invList.remove(e.getPlayer().getInventory());
     }
 }
