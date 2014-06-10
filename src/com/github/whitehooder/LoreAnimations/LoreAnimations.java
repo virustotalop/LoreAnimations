@@ -113,9 +113,17 @@ public class LoreAnimations extends JavaPlugin implements Listener {
     }
 
     public void convertGifs() {
-
         for (File file : gifFolder.listFiles()) {
-            new LoreAnimator(file, this);
+        	boolean exists = false;
+        	for (File txt : animationFolder.listFiles()) {
+        		if (txt.getName().equalsIgnoreCase(file.getName().replaceAll("\\.[Gg][Ii][Ff]$", ".txt"))) {
+        			exists = true;
+        			break;
+        		}	
+        	}
+        	if (!exists) {
+        		new LoreAnimator(file, this);
+        	}
         }
     }
 
