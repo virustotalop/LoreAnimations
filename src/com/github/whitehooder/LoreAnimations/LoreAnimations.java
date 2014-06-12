@@ -155,7 +155,12 @@ public class LoreAnimations extends JavaPlugin implements Listener {
         this.getServer().getScheduler().runTaskTimer(this, new DisplayRunnable(this), 0L, Math.round(20/fps));
     }
 
+    /**
+     * @param s The string to colorize
+     * @return The colorized string
+     */
     public String colorize(String s) {
+
         return ChatColor.translateAlternateColorCodes('&', s) + ChatColor.RESET;
     }
 }
